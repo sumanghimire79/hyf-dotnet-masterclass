@@ -1,0 +1,15 @@
+fetch = require("node-fetch-commonjs");
+
+(async function () {
+    const users = await getUsers();
+    const names = users.slice(0, 3).map((user) => user.first_name)
+    
+    names.forEach((firstName) => console.log(firstName));
+})();
+
+async function getUsers() {
+    const response = await fetch("https://reqres.in/api/users");
+    const data = await response.json();
+
+    return data.data;
+}

@@ -1,0 +1,97 @@
+using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+// asynhronous code
+var done = false;
+List<User> users = null;
+FetchUsers().ContinueWith(usersTask =>
+{
+    users = usersTask.Result.Take(3).ToList();
+    done = true;
+});
+
+// Other important work that we don't want to block
+while (!done)
+{
+    Console.WriteLine(DateTime.Now.ToString("HH:mm:ss.fff"));
+    Thread.Sleep(50);
+}
+
+// Final work
+foreach (User user in users)
+{
+    Console.WriteLine(user.FirstName);
+}
+
+async Task<List<User>> FetchUsers()
+{
+    var fetchClient = new HttpClient();
+    var data = await fetchClient.GetStringAsync("https://reqres.in/api/users");
+    var userInfo = JsonSerializer.Deserialize<UserInfoList>(data);
+
+    return userInfo.UserList;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public class User
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("email")]
+    public string Email { get; set; }
+
+    [JsonPropertyName("first_name")]
+    public string FirstName { get; set; }
+
+    [JsonPropertyName("last_name")]
+    public string LastName { get; set; }
+
+    [JsonPropertyName("avatar")]
+    public string Avatar { get; set; }
+}
+
+public class UserInfoList
+{
+    [JsonPropertyName("data")]
+    public List<User> UserList { get; set; }
+}

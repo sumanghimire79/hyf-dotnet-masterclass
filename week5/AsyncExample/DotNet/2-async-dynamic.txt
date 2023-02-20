@@ -1,0 +1,25 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+try
+{
+    JsonElement users = await FetchUsers();
+
+    foreach (JsonElement user in users.EnumerateArray().Take(3))
+    {
+        Console.WriteLine(user.GetProperty("first_name").GetString());
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+}
+
+async Task<JsonElement> FetchUsers()
+{
+    var fetchClient = new HttpClient();
+    var data = await fetchClient.GetStringAsync("https://reqres.in/api/users");
+    JsonSerializer.Deserialize<JsonElement>(data).TryGetProperty("data", out JsonElement users);
+    
+    return users;
+}
