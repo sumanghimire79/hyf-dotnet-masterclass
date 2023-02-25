@@ -47,5 +47,28 @@ app.MapGet("/2", () =>
   return ($"Number of vowels: {vowelCount}");
 });
 
+//3. Math/Array
+//Given an array of the numbers return an array with two elements where first element represents sum of all negative numbers and second element represents multiplication of all positive numbers;
+
+app.MapGet("/3", () =>
+{
+  int[] arr = new[] { 271, -3, 1, 14, -100, 13, 2, 1, -8, -59, -1852, 41, 5 };
+  int[] result = GetResult(arr); //TODO: Implement GetResult
+  int[] GetResult(int[] array)
+  {
+    int countP = 0;
+    int countN = 1;
+
+    foreach (int item in arr)
+    {
+      if (item < 0) countP += item;
+      if (item > 0) countN *= item;
+    }
+    return new[] { countP, countN };
+  }
+
+  Console.WriteLine($"Sum of negative numbers: {result[0]}. Multiplication of positive numbers: {result[1]}");
+  return ($"Sum of negative numbers: {result[0]}. Multiplication of positive numbers: {result[1]}");
+});
 
 app.Run();
