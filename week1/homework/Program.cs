@@ -71,4 +71,37 @@ app.MapGet("/3", () =>
   return ($"Sum of negative numbers: {result[0]}. Multiplication of positive numbers: {result[1]}");
 });
 
+
+//5. Arrays
+//Given an integer array as an input, if the length of the array is not even write the warning message, otherwise split the array in half and add both resulting arrays together and write the result.
+app.MapGet("/5", () =>
+{
+  int[] input = new[] { 1, 2, 5, 7, 2, 3, 5, 7 };
+  int mid = input.Length / 2;
+  int[] first = input.Take(mid).ToArray();
+  int[] second = input.Skip(mid).ToArray();
+  var sumArr = new int[mid];
+
+
+  if (input.Length % 2 != 0)
+  {
+    Console.WriteLine($"{input} array must have even length");
+  }
+  else
+  {
+
+    for (var i = 0; i < first.Length; i++)
+    {
+      var sum = 0;
+      sum = first[i] + second[i];
+      sumArr[i] = sum;
+    }
+  }
+  Console.WriteLine($"{sumArr}");
+  return sumArr;
+});
+
+
+
+
 app.Run();
