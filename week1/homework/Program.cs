@@ -56,21 +56,43 @@ app.MapGet("/3", () =>
   int[] result = GetResult(arr); //TODO: Implement GetResult
   int[] GetResult(int[] array)
   {
-    int countP = 0;
-    int countN = 1;
+    int countN = 0;
+    int countP = 1;
+
 
     foreach (int item in arr)
     {
-      if (item < 0) countP += item;
-      if (item > 0) countN *= item;
+      if (item < 0) countN += item;
+      if (item > 0) countP *= item;
     }
-    return new[] { countP, countN };
+    return new[] { countN, countP };
   }
 
   Console.WriteLine($"Sum of negative numbers: {result[0]}. Multiplication of positive numbers: {result[1]}");
   return ($"Sum of negative numbers: {result[0]}. Multiplication of positive numbers: {result[1]}");
 });
 
+
+// 4. Classical task
+// Create function Fibonacci that returns N'th element of Fibonacci sequence (classic programming task).
+app.MapGet("/4", () =>
+{
+  int input = 7;
+  int result = Fibonacci(input);
+  int Fibonacci(int number)
+  {
+    int firstNum = 0, secondNum = 1, nextNum = 0;
+    for (int i = 2; i <= number; i++)
+    {
+      nextNum = firstNum + secondNum;
+      firstNum = secondNum;
+      secondNum = nextNum;
+    }
+    Console.WriteLine($"Nth fibonacci number is {secondNum}");
+    return secondNum;
+  }
+  return $"Nth fibonacci number is {result}";
+});
 
 //5. Arrays
 //Given an integer array as an input, if the length of the array is not even write the warning message, otherwise split the array in half and add both resulting arrays together and write the result.
