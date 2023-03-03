@@ -46,23 +46,18 @@ app.MapGet("/2", (string input) =>
 
   if (isNumber1Valid)
   {
+    int AddNumbers(int parsedInput)
+    {
+      var sum = 0;
+      while (parsedInput > 0)
+      {
+        sum = sum + parsedInput % 10;
+        parsedInput = parsedInput / 10;
+      }
+      return sum;
+    }
     return Results.Ok(AddNumbers(parsedInput));
   }
-  return Results.Ok(CountCapitalLetters(input));
-
-  int AddNumbers(int parsedInput)
-  {
-
-    var sum = 0;
-    while (parsedInput > 0)
-    {
-      sum = sum + parsedInput % 10;
-      parsedInput = parsedInput / 10;
-    }
-    return sum;
-  }
-
-
   int CountCapitalLetters(string input)
   {
     int count = 0;
@@ -72,6 +67,7 @@ app.MapGet("/2", (string input) =>
     }
     return count;
   }
+  return Results.Ok(CountCapitalLetters(input));
 });
 
 // 3. Distinct alphabetical list
@@ -82,21 +78,18 @@ app.MapGet("/2", (string input) =>
 
 app.MapGet("/3", (string input) =>
 {
-
   var result = new List<char>();
-  List<char> test_list = new List<char>();
+  List<char> testList = new List<char>();
   foreach (char c in input)
   {
     if (char.IsLetter(c))
     {
       result.Add(c);
     }
-
-    test_list = result.Distinct().ToList();
-    test_list.Sort();
+    testList = result.Distinct().ToList();
+    testList.Sort();
   }
-
-  return Results.Ok(test_list);
+  return Results.Ok(testList);
 });
 
 
