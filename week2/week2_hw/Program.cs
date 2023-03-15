@@ -10,20 +10,19 @@ app.MapGet("/", () => "Hello World!");
 
 app.MapGet("/1", (string input) =>
 {
-
   var wordsArray = input.Trim().Split(" ");
   Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(wordsArray));
-  Dictionary<string, int> RepeatedWordCount = new Dictionary<string, int>();
+  Dictionary<string, int> repeatedWordCount = new Dictionary<string, int>();
   foreach (string word in wordsArray)
   {
-    if (RepeatedWordCount.ContainsKey(word))
+    if (repeatedWordCount.ContainsKey(word))
     {
-      int count = RepeatedWordCount[word];
-      RepeatedWordCount[word] = count + 1;
+      int count = repeatedWordCount[word];
+      repeatedWordCount[word] = count + 1;
     }
-    else { RepeatedWordCount.Add(word, 1); }
+    else { repeatedWordCount.Add(word, 1); }
   }
-  return RepeatedWordCount;
+  return repeatedWordCount;
 });
 
 app.Run();
