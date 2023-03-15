@@ -5,48 +5,46 @@ app.MapGet("/", () => "week-3 homework!");
 
 app.MapGet("/account", () =>
 {
-  var account = new Account(100);
+  var account = new Account();
   account.Deposit(100);
-  Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(account));
   Console.WriteLine($"Account balance is {account.Balance}");
   account.Withdraw(10);
-  Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(account));
   Console.WriteLine($"Account new balance is {account.Balance}");
-  Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(account));
   // account.Withdraw(200); // ❌ we should not be able to withdraw more than we have in the balance
+  return $"Account remaining balance is {account.Balance}";
 });
 
 app.MapGet("/interface", () =>
 {
   IAnimal dog = new Dog();
   dog.Name = "vote";
-  dog.Sound = "big vou vou";
+  dog.Sound = "big vou vou....";
   IAnimal cat = new Cat();
   cat.Name = "Rainbow cat";
-  cat.Sound = "big mau mau";
+  cat.Sound = "Mau Mau....";
   IAnimal cow = new Cow();
   cow.Name = "Holsten";
-
-  Sound sound = new Sound();
-  Console.WriteLine(sound.MakeSound(cow));
-  Console.WriteLine(sound.MakeSound(cat));
-  Console.WriteLine(sound.MakeSound(dog));
+  cow.Sound = "Mu Mu Mu...";
+  Console.WriteLine(MakeSound(dog));
+  Console.WriteLine(MakeSound(cat));
+  Console.WriteLine(MakeSound(cow));
+  return MakeSound(dog) + MakeSound(cat) + MakeSound(cow);
 });
-
-
+string MakeSound(IAnimal animal)
+{
+  return $"{animal.Name} makes {animal.Sound}";
+}
 app.MapGet("/temperature", () =>
 {
   var temperature = new Temperature(100.4m);
   Console.WriteLine($" {temperature.Celsius} degree centigrade is equal to : {temperature.GetFahrenheit()} degree farenheight");
   Console.WriteLine($" {temperature.Celsius} degree farenheight is equal to {temperature.GetCentigrade()} degree centigrade");
 });
-app.MapGet("/exchange", () =>
+app.MapGet("/exchange", (double amount, double rate) =>
 {
-  var amount = 200;
   var exchangeRate = new ExchangeRate("EUR", "DKK");
-  Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(exchangeRate));
-  exchangeRate.Rate = 1.5m;
-  Console.WriteLine($"{amount} {exchangeRate.FromCurrency} is {exchangeRate.Calculate(amount)} {exchangeRate.ToCurrency}");
+  exchangeRate.Rate = rate;
+  return $"{amount} {exchangeRate.FromCurrency} is {exchangeRate.Calculate(amount)} {exchangeRate.ToCurrency}";
 });
 app.Run();
 
@@ -56,16 +54,16 @@ app.Run();
 //  Make sure that you can't withdraw more than you have in the balance.
 public class Account
 {
-  public double Amount { get; set; }
-  public Account(double amount)
-  {
-    Amount = amount;
-  }
+
   public double _balance;
   public double Balance { get => _balance; }
   public double Deposit(double amountToDeposit)
   {
-    double result = Amount + amountToDeposit;
+    if (amountToDeposit < 0)
+    {
+      throw new Exception("negative amount can not be deposited");
+    }
+    double result = _balance + amountToDeposit;
     this._balance = result;
     return result;
   }
@@ -111,15 +109,6 @@ class Dog : IAnimal
   public string? Sound { get; set; }
 }
 
-class Sound
-{
-  public string MakeSound(IAnimal animal)
-  {
-    return $"{animal.Name} makes {animal.Sound}";
-  }
-}
-
-
 // 3. exchange
 // Create a class named ExchangeRate with a constructor with two string parameters, fromCurrency and toCurrency.
 // Add a decimal property called Rate and method Calculate with decimal parameter amount return value of 
@@ -129,8 +118,8 @@ public class ExchangeRate
 {
   public string FromCurrency { get; set; }
   public string ToCurrency { get; set; }
-  public decimal _rate = 7.5m;
-  public decimal Rate
+  public double _rate = 7.5;
+  public double Rate
   {
     get => _rate; set
     {
@@ -147,7 +136,7 @@ public class ExchangeRate
     FromCurrency = fromCurrency;
     ToCurrency = toCurrency;
   }
-  public decimal Calculate(decimal amount)
+  public double Calculate(double amount)
   {
     if (amount < 0)
     {
@@ -170,9 +159,9 @@ public class Temperature
     get => _celsius;
     private set
     {
-      if (value < 33.15m)
+      if (value < -273.15m)
       {
-        throw new Exception("Och , temperatuer is less than 73.15 ");
+        throw new Exception("Och , temperatuer is less than -273.15 ");
       }
       _celsius = value;
     }
