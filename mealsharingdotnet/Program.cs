@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IMealService, FileMealService>();
+builder.Services.Remove(ServiceDescriptor.Transient<IMealService, FileMealService>());//delete meal service
 
 var app = builder.Build();
 
@@ -25,13 +26,17 @@ app.MapGet("/meals", ([FromServices] IMealService mealSharingService) =>
 {
   return mealSharingService.ListMeals();
 });
-
+app.MapDelete("/meals", ([FromServices] IMealService mealSharingService, int id) =>
+{
+  mealSharingService.DeleteMeal(id);
+});
 app.Run();
 
 public interface IMealService
 {
   List<Meal> ListMeals();
   void AddMeal(Meal meal);
+  void DeleteMeal(int id);
 }
 public class Meal
 {
@@ -81,6 +86,21 @@ public class FileMealService : IMealService
       }
     }
     meals.Add(meal);
+    var mealsJson = System.Text.Json.JsonSerializer.Serialize(meals);
+    File.WriteAllText("meals.json", mealsJson);
+    Console.WriteLine(mealsJson);
+  }
+
+  public void DeleteMeal(int id)
+  {
+    var readJsonFile = File.ReadAllText(@"meals.json");
+    var meals = System.Text.Json.JsonSerializer.Deserialize<List<Meal>>(readJsonFile);
+    var toRemove = new List<Meal>();
+    foreach (Meal meal in meals)
+    {
+      if (meal.ID == id) { toRemove.Add(meal); }
+    }
+    meals.RemoveAll(meal => meal.ID == id);
     var mealsJson = System.Text.Json.JsonSerializer.Serialize(meals);
     File.WriteAllText("meals.json", mealsJson);
     Console.WriteLine(mealsJson);
