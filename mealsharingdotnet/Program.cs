@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IMealService, FileMealService>();
 builder.Services.Remove(ServiceDescriptor.Transient<IMealService, FileMealService>());//delete meal service
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
+if (app.Environment.IsDevelopment())
+{
+  app.UseSwagger();
+  app.UseSwaggerUI();
+}
 
 app.MapGet("/", () => "week5-mealsharing dotnet");
 
