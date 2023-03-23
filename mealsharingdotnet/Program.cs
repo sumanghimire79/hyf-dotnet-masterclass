@@ -1,4 +1,5 @@
 
+using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,10 +27,17 @@ app.MapGet("/meals", ([FromServices] IMealService mealSharingService) =>
 {
   return mealSharingService.ListMeals();
 });
+
 app.MapDelete("/meals", ([FromServices] IMealService mealSharingService, int id) =>
 {
   mealSharingService.DeleteMeal(id);
 });
+
+app.MapPut("/meals", ([FromServices] IMealService mealSharingService, int id, Meal updateBody) =>
+{
+  mealSharingService.UpdateMeal(id, updateBody);
+});
+
 app.Run();
 
 public interface IMealService
@@ -37,6 +45,7 @@ public interface IMealService
   List<Meal> ListMeals();
   void AddMeal(Meal meal);
   void DeleteMeal(int id);
+  void UpdateMeal(int id, Meal updateBody);
 }
 public class Meal
 {
@@ -95,15 +104,22 @@ public class FileMealService : IMealService
   {
     var readJsonFile = File.ReadAllText(@"meals.json");
     var meals = System.Text.Json.JsonSerializer.Deserialize<List<Meal>>(readJsonFile);
-    var toRemove = new List<Meal>();
-    foreach (Meal meal in meals)
-    {
-      if (meal.ID == id) { toRemove.Add(meal); }
-    }
-    meals.RemoveAll(meal => meal.ID == id);
+    meals.RemoveAll(findMealtoRemove => findMealtoRemove.ID == id);
     var mealsJson = System.Text.Json.JsonSerializer.Serialize(meals);
     File.WriteAllText("meals.json", mealsJson);
     Console.WriteLine(mealsJson);
+  }
+  public void UpdateMeal(int id, Meal updateBody)
+  {
+    var readJsonFile = File.ReadAllText(@"meals.json");
+    var meals = System.Text.Json.JsonSerializer.Deserialize<List<Meal>>(readJsonFile);
+    var mealtoUpdate = meals.Find(findMealtoUpdate => findMealtoUpdate.ID == id);
+    mealtoUpdate.BodyText = updateBody.BodyText;
+    mealtoUpdate.Headline = updateBody.Headline;
+    mealtoUpdate.Price = updateBody.Price;
+    mealtoUpdate.ImageURL = updateBody.ImageURL;
+    var mealsJson = System.Text.Json.JsonSerializer.Serialize(meals);
+    File.WriteAllText("meals.json", mealsJson);
   }
 
 }
