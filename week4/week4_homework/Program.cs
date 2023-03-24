@@ -7,7 +7,6 @@ app.MapGet("/", () => "week4-homework");
  A POST endpoint that calls POST users/add with a record
  with FirstName, LastName and Age (this simulates creating a user)
 */
-
 // {
 //     "firstName":"Suman",
 //     "lastName":"Ghimire",
@@ -24,7 +23,6 @@ app.MapPost("/users/add", async (User dataBody) =>
 A POST endpoint that that calls Post products/add 
 with a record with Title and Price (this simulates creating a product)
 */
-
 // {
 //     "title":"my product",
 //     "price": 20
@@ -36,33 +34,18 @@ app.MapPost("/products/add", async (Product dataBody) =>
   return Results.Ok(result);
 });
 
-/*3.
-A POST endpoint that takes a lists of ids and retrieves all
+/*
+ 3.A POST endpoint that takes a lists of ids and retrieves all
 of the users with those ids from the GET users (Id, FirstName, LastName and Age)
+ 4.A POST endpoint that takes a lists of ids and retrieves all of the products with those ids GET products(Id, Title)
 */
-
-// {
-//     "id":[9,2,3]
-// }
-// /users/listOfUsers
-app.MapPost("/users/listOfUsers", async (IDClass IDarray) =>
+app.MapPost("/postNget", async (RequestInList request) =>
 {
-  var result = await GetListOfUsers(IDarray);
-  return Results.Ok(result);
-});
-
-/*4.
-A POST endpoint that takes a lists of ids and retrieves all of the products with those ids GET products(Id, Title)
-
-*/
-// {
-//     "id":[99,2,3,7,9]
-// }
-// /users/listOfProducts
-app.MapPost("/users/listOfProducts", async (IDClass IDarray) =>
-{
-  var result = await GetlistOfProducts(IDarray);
-  return Results.Ok(result);
+  if (request.UsersORproducts == "users")
+    return Results.Ok(await GetListOfItems<User>(request));
+  if (request.UsersORproducts == "products")
+    return Results.Ok(await GetListOfItems<Product>(request));
+  return Results.BadRequest(" Request is not supported currently !");
 });
 
 /*
@@ -76,7 +59,6 @@ OPTIONAL:
 */
 
 /* 5. A GET endpoint that gets a user based on an id*/
-
 // /getUsers?id=1
 app.MapGet("/getUsers", async (int id) =>
 {
@@ -85,7 +67,6 @@ app.MapGet("/getUsers", async (int id) =>
 });
 
 /*6.  A GET endpoint that gets a product based on an id*/
-
 // /getProducts?id=1
 app.MapGet("/getProducts", async (int id) =>
 {
@@ -94,7 +75,6 @@ app.MapGet("/getProducts", async (int id) =>
 });
 
 /*7. A PUT endpoint that updates a user based on an id and the body of the request*/
-
 // {
 //     "FirstName":"amrit",
 //     "LastName":"Ghimire",
@@ -110,7 +90,6 @@ app.MapPut("/updateUser", async (User dataBody) =>
 });
 
 /* 8. A PUT endpoint that updates a product based on an id and the body of the request */
-
 // {
 //     "title":"my /sproduct",
 //     "price": 20.20,
@@ -143,148 +122,104 @@ app.MapDelete("/deleteProduct", async (int id) =>
 app.Run();
 
 // 1.
-async Task<object> PostUser(User dataBody)
+async Task<ReturnObj<User>> PostUser(User dataBody)
 {
   Console.WriteLine(dataBody.FirstName);
   var httpClient = new HttpClient();
   var postRequest = await httpClient.PostAsJsonAsync("https://dummyjson.com/users/add", dataBody);
   var UserDataResponce = await postRequest.Content.ReadFromJsonAsync<User>();
-  var postResponce = new
-  {
-    StatusCode = postRequest.StatusCode,
-    ReasonPhrase = postRequest.ReasonPhrase,
-    data = UserDataResponce,
-    Date = postRequest.Headers.Date,
-  };
-  return postResponce;
+  ReturnObj<User> retobj = new ReturnObj<User>(postRequest.StatusCode, postRequest.ReasonPhrase, UserDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return retobj;
+
 }
 
 // 2.
-async Task<Object> PostProduct(Product dataBody)
+async Task<ReturnObj<Product>> PostProduct(Product dataBody)
 {
   var httpClient = new HttpClient();
   var postRequest = await httpClient.PostAsJsonAsync("https://dummyjson.com/products/add", dataBody);
-  var UserDataResponce = await postRequest.Content.ReadFromJsonAsync<Product>();
-  var postResponce = new
-  {
-    StatusCode = postRequest.StatusCode,
-    ReasonPhrase = postRequest.ReasonPhrase,
-    data = UserDataResponce,
-    Date = postRequest.Headers.Date,
-  };
-  var product = dataBody.Title;
-  return postResponce;
+  var ProductDataResponce = await postRequest.Content.ReadFromJsonAsync<Product>();
+  ReturnObj<Product> returnObj = new ReturnObj<Product>(postRequest.StatusCode, postRequest.ReasonPhrase, ProductDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return returnObj;
 };
 
-// 3.
-async Task<object> GetListOfUsers(IDClass IDarray)
+// 3.//4.
+async Task<List<T>> GetListOfItems<T>(RequestInList request)
 {
-  var httpClient = new HttpClient();
-  var responce = "";
-  foreach (var id in IDarray.Id)
+  var listOfTaskItems = new List<Task<T>>();
+  foreach (var id in request.ID)
   {
-    var postRequest = await httpClient.GetAsync($"https://dummyjson.com/users/{id}");
-    var data = postRequest.Content.ReadFromJsonAsync<User>();
-    responce += $" ID:{data.Result.ID}  Name:{data.Result.FirstName} {data.Result.LastName}  Age:{data.Result.Age}";
+    var retrievedItem = GetItem<T>(request.UsersORproducts, id);
+    listOfTaskItems.Add(retrievedItem);
   }
-  return responce;
-};
-
-// 4.
-async Task<object> GetlistOfProducts(IDClass IDarray)
+  return (await Task.WhenAll(listOfTaskItems)).ToList();
+}
+async Task<T> GetItem<T>(string endpoint, int id)
 {
-  var httpClient = new HttpClient();
-  var responce = "";
-  foreach (var id in IDarray.Id)
-  {
-    var postRequest = await httpClient.GetAsync($"https://dummyjson.com/products/{id}");
-    var data = postRequest.Content.ReadFromJsonAsync<Product>();
-    responce += $" Product:{data.Result.Title}  Price:{data.Result.Price}";
-  }
-  return responce;
-};
+  var request = await new HttpClient().GetAsync($"https://dummyjson.com/{endpoint}/{id}");
+  var listOfUsersORproducts = await request.Content.ReadFromJsonAsync<T>();
+  return listOfUsersORproducts;
+}
 
 // 5.
-async Task<User> GetUsers(int id)
+async Task<ReturnObj<User>> GetUsers(int id)
 {
   var httpClient = new HttpClient();
   var postRequest = await httpClient.GetAsync($"https://dummyjson.com/users/{id}");
   var UserDataResponce = await postRequest.Content.ReadFromJsonAsync<User>();
-  return UserDataResponce;
+  ReturnObj<User> retobj = new ReturnObj<User>(postRequest.StatusCode, postRequest.ReasonPhrase, UserDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return retobj;
 }
 
 // 6.
-async Task<Product> GetProducts(int id)
+async Task<ReturnObj<Product>> GetProducts(int id)
 {
   var httpClient = new HttpClient();
   var postRequest = await httpClient.GetAsync($"https://dummyjson.com/Products/{id}");
   var productDataResponce = await postRequest.Content.ReadFromJsonAsync<Product>();
-  return productDataResponce;
+  ReturnObj<Product> returnObj = new ReturnObj<Product>(postRequest.StatusCode, postRequest.ReasonPhrase, productDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return returnObj;
 }
 
 // 7.
-async Task<object> UpdateUser(User dataBody)
+async Task<ReturnObj<User>> UpdateUser(User dataBody)
 {
   var httpClient = new HttpClient();
   var postRequest = await httpClient.PutAsJsonAsync($"https://dummyjson.com/users/{dataBody.ID}", dataBody);
   var userDataResponce = await postRequest.Content.ReadFromJsonAsync<User>();
-  var postResponce = new
-  {
-    StatusCode = postRequest.StatusCode,
-    ReasonPhrase = postRequest.ReasonPhrase,
-    data = userDataResponce,
-    Date = postRequest.Headers.Date,
-  };
-  return postResponce;
+  ReturnObj<User> retobj = new ReturnObj<User>(postRequest.StatusCode, postRequest.ReasonPhrase, userDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return retobj;
 }
 
 // 8.
-async Task<Object> UpdateProduct(Product dataBody)
+async Task<ReturnObj<Product>> UpdateProduct(Product dataBody)
 {
   Console.WriteLine(dataBody.ID);
   var httpClient = new HttpClient();
   var postRequest = await httpClient.PutAsJsonAsync($"https://dummyjson.com/products/{dataBody.ID}", dataBody);
   var ProductDataResponce = await postRequest.Content.ReadFromJsonAsync<Product>();
-  var postResponce = new
-  {
-    StatusCode = postRequest.StatusCode,
-    ReasonPhrase = postRequest.ReasonPhrase,
-    data = ProductDataResponce,
-    Date = postRequest.Headers.Date,
-  };
-  return postResponce;
+  ReturnObj<Product> returnObj = new ReturnObj<Product>(postRequest.StatusCode, postRequest.ReasonPhrase, ProductDataResponce, (System.DateTimeOffset)postRequest.Headers.Date);
+  return returnObj;
 }
 
 // 9.
-async Task<Object> deleteUser(int id)
+async Task<ReturnObj<User>> deleteUser(int id)
 {
   var httpClient = new HttpClient();
   var deleteRequest = await httpClient.DeleteAsync($"https://dummyjson.com/users/{id}");
   var deleteResponce = await deleteRequest.Content.ReadFromJsonAsync<User>();
-  var result = new
-  {
-    StatusCode = deleteRequest.StatusCode,
-    ReasonPhrase = deleteRequest.ReasonPhrase,
-    data = deleteResponce,
-    Date = deleteRequest.Headers.Date,
-  };
-  return result;
+  ReturnObj<User> retobj = new ReturnObj<User>(deleteRequest.StatusCode, deleteRequest.ReasonPhrase, deleteResponce, (System.DateTimeOffset)deleteRequest.Headers.Date);
+  return retobj;
 }
 
 // 10.
-async Task<Object> DeleteProduct(int id)
+async Task<ReturnObj<Product>> DeleteProduct(int id)
 {
   var httpClient = new HttpClient();
   var deleteRequest = await httpClient.DeleteAsync($"https://dummyjson.com/products/{id}");
   var deleteResponce = await deleteRequest.Content.ReadFromJsonAsync<Product>();
-  var result = new
-  {
-    StatusCode = deleteRequest.StatusCode,
-    ReasonPhrase = deleteRequest.ReasonPhrase,
-    data = deleteResponce,
-    Date = deleteRequest.Headers.Date,
-  };
-  return result;
+  ReturnObj<Product> returnObj = new ReturnObj<Product>(deleteRequest.StatusCode, deleteRequest.ReasonPhrase, deleteResponce, (System.DateTimeOffset)deleteRequest.Headers.Date);
+  return returnObj;
 }
 
 // record User(string FirstName, string LastName, int Age);
@@ -317,12 +252,31 @@ class Product
   }
 }
 
-// record IDClass(int[] Id);
-public class IDClass
+// record RequestIDList(List<int> Ids);
+public class RequestInList
 {
-  public int[] Id { get; set; }
-  public IDClass(int[] id)
+  public string UsersORproducts { get; set; }
+  public List<int> ID { get; set; }
+  public RequestInList(List<int> id, string usersORproducts)
   {
-    Id = id;
+    ID = id;
+    UsersORproducts = usersORproducts;
   }
 }
+
+public class ReturnObj<T>
+{
+  public System.Net.HttpStatusCode StatusCode { get; set; }
+  public string ReasonPhrase { get; set; }
+  public T Data { get; set; }
+  public System.DateTimeOffset CurrentDate { get; set; }
+  public ReturnObj() { }
+  public ReturnObj(System.Net.HttpStatusCode statuscode, string reasonfrase, T data, System.DateTimeOffset currentdate)
+  {
+    StatusCode = statuscode;
+    ReasonPhrase = reasonfrase;
+    Data = data;
+    CurrentDate = currentdate;
+  }
+}
+
