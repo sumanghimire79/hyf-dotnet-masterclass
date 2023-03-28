@@ -45,7 +45,7 @@ app.MapGet("/users", async (IConfiguration configuration) =>
         {
           var user = reader.GetString(reader.GetOrdinal("user"));
           var host = reader.GetString(reader.GetOrdinal("host"));
-          users.Add(new User(user, host));
+          users.Add(new User(user, host));//######??? to pass both user and host here needs empty constructor ..
         }
         return Results.Ok(users);
       }
@@ -92,9 +92,7 @@ app.MapGet("/products/{id}", async (IConfiguration configuration, int id) =>
 {
   if (id < 0)
   {
-    //#####
-    throw new Exception("id can not be negative");//??
-    // Results.BadRequest($" you entered id:{id},id can not be negative"); 
+    return Results.BadRequest($" you entered id:{id},id can not be negative");
   }
   using var connection = new MySqlConnection(configuration.GetConnectionString("Default"));
   var products = await connection.QueryAsync<Product>($"SELECT id, name, price,description FROM dapper.products where id={id}");
@@ -110,19 +108,19 @@ app.MapGet("/firstordefault/{id}", async (IConfiguration configuration, int id) 
 {
   if (id < 0)
   {
-    throw new Exception("id can not be negative");
-    // Results.BadRequest($" you entered id:{id},id can not be negative");
+    return Results.BadRequest($" you entered id:{id},id can not be negative");
   }
-  //#####
+  //##### tryParse
   // how to checko if the input is letter instead of number or is not a number???
   // var isNumeric = int.TryParse((string)id, out int value);
+
   using var connection = new MySqlConnection(configuration.GetConnectionString("Default"));
   var products = await connection.QueryAsync<Product>($"SELECT id, name, price,description FROM dapper.products where id={id}");
   if (products.Count() == 0)
   {
-    throw new Exception("product id not found");
+    return Results.NotFound($"product id: {id} not found");
   }
-  return products.FirstOrDefault();
+  return Results.Ok(products.FirstOrDefault());
 });
 
 /*
@@ -145,14 +143,13 @@ postman input
 */
 app.MapPost("/products", async (IConfiguration configuration, Product product) =>
 {
-  // it also works #####??
-  // if (product.Name == "" || product.Name == null || product.Price == null) // how to check null or empty for decimal???
-  // {
-  //   return Results.BadRequest($" name: '{product.Name}' or price: '{product.Price}' is not valid, please provide valid data !!");//400 badrequest
-  // }
   if (string.IsNullOrEmpty(product.Name))
   {
-    return Results.BadRequest($" name: '{product.Name}' or price: '{product.Price}' is not valid, please provide valid data !!");
+    return Results.BadRequest($" name: '{product.Name}' is not valid, please provide valid data !!");
+  }
+  if (product.Price == 0 || product.Price == null)
+  {
+    return Results.BadRequest($"  price: '{product.Price}' is not valid, please provide valid data !!");
   }
   await using var connection = new MySqlConnection(configuration.GetConnectionString("Default"));
   var producPost = await connection.ExecuteAsync("INSERT INTO dapper.products (name, price, description) VALUES (@name, @price, @description)", product);// how to take the id that is recently posted??
@@ -253,7 +250,7 @@ public class User
   }
 }
 
-record Product(int Id, string Name, decimal Price, string description);
+record Product(int Id, string Name, decimal? Price, string description);
 record Salesman(int Id, string Name, string email);
 record Sales(int Id, string Shop_Name, string Shop_address, DateTime Sales_date, int Salesman_id, int Products_id);
 
