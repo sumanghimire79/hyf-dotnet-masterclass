@@ -28,7 +28,7 @@ app.MapGet("/users", async (IConfiguration configuration) =>
         {
           var user = reader.GetString(reader.GetOrdinal("user"));
           var host = reader.GetString(reader.GetOrdinal("host"));
-          users.Add(new User(user, host));//#to pass both user and host here it needs also empty constructor in User class/record
+          users.Add(new User(user, host));
         }
         if (users.Count() != 0)
         {
@@ -56,15 +56,14 @@ app.MapGet("/users2", async (IConfiguration configuration) =>
   {
     // starting from C# 8 you no longer need inner {}
     using var connection = new MySqlConnection(configuration.GetConnectionString("Default"));
-    var users = await connection.QueryAsync<User>("SELECT * FROM mysql.user");
-
-    if (users.Count() != 0)
+    var user = await connection.QueryAsync<User>("SELECT user,host FROM mysql.user"); //select * gives error without empty construtor. 
+    if (user.Count() != 0)
     {
       return Results.Ok(new Returnobj()
       {
         Status = "200 ok",
         Message = "successful",
-        Data = users,
+        Data = user,
       });
     }
     return Results.Ok(new Returnobj()
@@ -421,7 +420,7 @@ public class User
 {
   public string? user { get; set; } = "suman";
   public string? host { get; set; } = "ghimire";
-  public User() { }// shows error in line 30 without this empty constructor ??
+  // public User() { }// shows error in /user2 endpoint without this empty constructor in case it is used 'select * '. this is because User class has only two fields user and host.
   public User(string user, string host)
   {
     this.user = user;
