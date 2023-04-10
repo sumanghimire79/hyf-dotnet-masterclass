@@ -15,8 +15,16 @@ builder.Services.AddScoped<IMealRepository, MealRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+  app.UseSwagger();
+  app.UseSwaggerUI();
+}
 app.MapGet("/", () => "week 7 meal sharing final!");
 
 //meal routes
