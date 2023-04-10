@@ -20,7 +20,7 @@ public class MealRepository : IMealRepository
   public async Task<Object> GetMealByID(int id)
   {
     using var connection = new MySqlConnection(connectionString);
-    var mealById = await connection.QueryAsync($"SELECT * FROM meal WHERE id = {id}", new { id });
+    var mealById = await connection.QueryAsync($"SELECT * FROM meal WHERE id = @id");
     return mealById;
   }
   public async Task<Meal> AddMeal(Meal meal)
