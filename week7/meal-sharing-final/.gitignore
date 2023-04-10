@@ -5,3 +5,5 @@ frontend/.env_example
 frontend/.env_forlocalhost
 frontend/database_dump_meals.sql
 frontend/package-lock.json
+.gitignore
+backend/appsettings.Development.json
