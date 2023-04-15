@@ -12,9 +12,12 @@ export const AddMeal = () => {
   const [message, setMessage] = useState('');
   const [isDone, setIsDone] = useState(false);
 
-  const today = new Date();
-  const date =
-    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  // const today = new Date();
+  // const date =
+  //   today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+  // console.log(today.toLocaleDateString);
+  // console.log(today);
 
   let handleSubmitMeal = async (e) => {
     e.preventDefault();
@@ -25,7 +28,7 @@ export const AddMeal = () => {
       when: when,
       max_reservations: Number(maxReservation),
       price: Number(price),
-      created_date: date,
+      created_date: new Date().toISOString(),
     };
 
     try {

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import Stars from 'react-stars-display';
 export function Home() {
   const [popularMeals, setPopularMeals] = useState([]);
 
   const fetchItem = async () => {
-    const data = await fetch('/api/meals?popularMeal=true');
+    // const data = await fetch('/api/meals?popularMeal=true');
+    const data = await fetch('/api/meals/popularmeal');
     const jsonData = await data.json();
     setPopularMeals(jsonData);
   };
@@ -61,6 +62,10 @@ export function Home() {
         </p>
         <p>
           Price :<strong> {popularMeal.price} </strong>
+        </p>
+        <p>
+          <Stars stars={popularMeal.stars} size={30} />
+          {console.log(popularMeal)}
         </p>
       </div>
     );

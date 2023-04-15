@@ -16,8 +16,12 @@ export const AddReservation = () => {
   const [message, setMessage] = useState('');
   const [isDone, setIsDone] = useState(false);
 
+  console.log(date);
+  console.log(new Date().toISOString());
+
   const fetchAvailableReservations = async () => {
-    const data = await fetch('/api/meals?availableReservations=true');
+    // const data = await fetch('/api/meals?availableReservations=true');
+    const data = await fetch('/api/meals/availableReservations');
     const jsonData = await data.json();
     setAvailableReservations(jsonData);
   };
@@ -30,7 +34,7 @@ export const AddReservation = () => {
     e.preventDefault();
     const reservationPost = {
       number_of_guests: numberOfGuests,
-      created_date: date,
+      created_date: new Date().toISOString(),
       contact_phonenumber: phone,
       contact_name: fullName,
       contact_email: email,

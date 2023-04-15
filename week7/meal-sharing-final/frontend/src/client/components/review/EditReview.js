@@ -26,6 +26,7 @@ export const EditReview = () => {
       return (
         <div>
           {setReviewID(editReview.id)}
+          {setReviewTitle(editReview.title)}
           {setReviewDescription(editReview.description)}
           {setReviewStars(editReview.stars)}
           {setReviewCreatedDate(editReview.created_date.split('T')[0])}
@@ -56,7 +57,7 @@ export const EditReview = () => {
       title: reviewTitle,
       description: reviewDescription,
       stars: reviewStars,
-      created_date: reviewDate,
+      created_date: new Date().toISOString(),
       meal_id: reviewMealId,
     };
     const putReviewOptions = {

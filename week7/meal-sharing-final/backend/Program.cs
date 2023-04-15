@@ -1,13 +1,15 @@
 
-using mealSharingFfinal.meal.meal;
+using mealSharingFfinal.meal.Meal;
 using mealSharingFfinal.meal.MealRepository;
 using mealSharingFfinal.meal.IMealRepository;
-using mealSharingFfinal.review.review;
+using mealSharingFfinal.review.Review;
 using mealSharingFfinal.review.ReviewRepository;
 using mealSharingFfinal.review.IReviewRepository;
-using mealSharingFfinal.reservation.reservation;
+using mealSharingFfinal.reservation.Reservation;
 using mealSharingFfinal.reservation.ReservationRepository;
 using mealSharingFfinal.reservation.IReservationRepository;
+
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,7 +47,10 @@ app.MapGet("/api/meals/{id}", async (IMealRepository mealRepository, int id) =>
 
 app.MapPost("/api/meals", async (IMealRepository mealRepository, Meal meal) =>
 {
-  return await mealRepository.AddMeal(meal);
+  // return await mealRepository.AddMeal(meal);
+  var createdMeal = await mealRepository.AddMeal(meal);
+  return Results.Created($"/api/mealsy/{createdMeal.ID}", createdMeal);
+
 });
 
 app.MapPut("/api/meals/{id}", async (IMealRepository mealRepository, Meal meal, int id) =>
@@ -56,6 +61,15 @@ app.MapPut("/api/meals/{id}", async (IMealRepository mealRepository, Meal meal, 
 app.MapDelete("/api/meals/{id}", async (IMealRepository mealRepository, int id) =>
 {
   return await mealRepository.DeleteMealByID(id);
+});
+
+app.MapGet("/api/meals/availableReservations", async (IMealRepository mealRepository) =>
+{
+  return await mealRepository.AvailableReservation();
+});
+app.MapGet("/api/meals/popularmeal", async (IMealRepository mealRepository) =>
+{
+  return await mealRepository.PopularMeal();
 });
 
 
@@ -77,7 +91,10 @@ app.MapGet("/api/reviews/{id}", async (IReviewRepository reviewRepository, int i
 
 app.MapPost("/api/reviews", async (IReviewRepository reviewRepository, Review review) =>
 {
-  return await reviewRepository.AddReview(review);
+  // return await reviewRepository.AddReview(review);
+
+  var createdReview = await reviewRepository.AddReview(review);
+  return Results.Created($"/api/reviews/{createdReview.ID}", createdReview);
 });
 
 app.MapPut("/api/reviews/{id}", async (IReviewRepository reviewRepository, Review review, int id) =>
@@ -108,11 +125,13 @@ app.MapGet("/api/reservations/{id}", async (IReservationRepository reservationRe
 
 app.MapPost("/api/reservations", async (IReservationRepository reservationRepository, Reservation reservation) =>
 {
-  return await reservationRepository.AddReservation(reservation);
+  var createdReservation = await reservationRepository.AddReservation(reservation);
+  return Results.Created($"/api/reservations/{createdReservation.ID}", createdReservation);
 });
 
 app.MapPut("/api/reservations/{id}", async (IReservationRepository reservationRepository, Reservation reservation, int id) =>
 {
+
   return await reservationRepository.UpdateReservationByID(reservation, id);
 });
 
