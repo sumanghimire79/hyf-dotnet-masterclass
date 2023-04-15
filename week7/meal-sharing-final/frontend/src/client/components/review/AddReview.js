@@ -14,9 +14,9 @@ export const AddReview = () => {
   const [isDone, setIsDone] = useState(false);
   console.log(typeof mealId);
 
-  const today = new Date();
-  const date =
-    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  // const today = new Date();
+  // const date =
+  //   today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
   const fetchReview = async () => {
     const data = await fetch('api/meals');
@@ -34,7 +34,7 @@ export const AddReview = () => {
       title: title,
       description: description,
       stars: Number(stars),
-      created_date: date,
+      created_date: new Date().toISOString(),
       meal_id: Number(mealId),
     };
 
