@@ -1,5 +1,4 @@
-
-namespace mealSharingFfinal.meal.meal;
+namespace mealSharingFfinal.meal.Meal;
 using System.Text.Json.Serialization;
 public class Meal
 {
@@ -9,10 +8,10 @@ public class Meal
   public string? Location { get; set; }
   public DateTime When { get; set; }
   [JsonPropertyName("max_reservations")]
-  public int MaxReservations { get; set; }
+  public int? max_reservations { get; set; }
   public decimal? Price { get; set; }
   [JsonPropertyName("created_date")]
-  public DateTime CreatedDate { get; set; }
+  public DateTime? created_date { get; set; }
   public Meal() { }
   public Meal(int id, string title, string description, string location, DateTime when, int maxReservations, decimal price, DateTime createdDate)
   {
@@ -21,8 +20,8 @@ public class Meal
     Description = description;
     Location = location;
     When = when;
-    MaxReservations = maxReservations;
+    max_reservations = maxReservations;
     Price = price;
-    CreatedDate = createdDate;
+    created_date = createdDate;
   }
 }

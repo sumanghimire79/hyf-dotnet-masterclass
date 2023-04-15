@@ -1,9 +1,8 @@
 namespace mealSharingFfinal.reservation.IReservationRepository;
-using mealSharingFfinal.reservation.reservation;
+using mealSharingFfinal.reservation.Reservation;
 public interface IReservationRepository
 {
   Task<IEnumerable<Reservation>> GetAllReservation();
-
   Task<Object> GetReservationByID(int id);
   Task<Reservation> AddReservation(Reservation reservation);
   Task<Reservation> UpdateReservationByID(Reservation reservation, int id);
