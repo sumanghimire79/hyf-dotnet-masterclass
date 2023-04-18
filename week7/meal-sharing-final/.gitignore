@@ -1,0 +1,8 @@
+backend/bin/
+backend/obj/
+frontend/node_modules
+frontend/.env_example
+frontend/.env_forlocalhost
+frontend/database_dump_meals.sql
+frontend/package-lock.json
+backend/appsettings.Development.json

@@ -5,10 +5,15 @@ using mealSharingFfinal.meal.IMealRepository;
 using mealSharingFfinal.review.review;
 using mealSharingFfinal.review.ReviewRepository;
 using mealSharingFfinal.review.IReviewRepository;
+using mealSharingFfinal.reservation.reservation;
+using mealSharingFfinal.reservation.ReservationRepository;
+using mealSharingFfinal.reservation.IReservationRepository;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IMealRepository, MealRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 var app = builder.Build();
 
@@ -75,6 +80,37 @@ app.MapPut("/api/reviews/{id}", async (IReviewRepository reviewRepository, Revie
 app.MapDelete("/api/reviews/{id}", async (IReviewRepository reviewRepository, int id) =>
 {
   return await reviewRepository.DeleteReviewByID(id);
+});
+
+//reservation routes
+app.MapGet("/api/reservations", async (IReservationRepository reservationRepository) =>
+{
+  return await reservationRepository.GetAllReservation();
+});
+
+app.MapGet("/api/reservations/search/", async (IReservationRepository reservationRepository, string title) =>
+{
+  return await reservationRepository.SearchReservation(title);
+});
+
+app.MapGet("/api/reservations/{id}", async (IReservationRepository reservationRepository, int id) =>
+{
+  return await reservationRepository.GetReservationByID(id);
+});
+
+app.MapPost("/api/reservations", async (IReservationRepository reservationRepository, Reservation reservation) =>
+{
+  return await reservationRepository.AddReservation(reservation);
+});
+
+app.MapPut("/api/reservations/{id}", async (IReservationRepository reservationRepository, Reservation reservation, int id) =>
+{
+  return await reservationRepository.UpdateReservationByID(reservation, id);
+});
+
+app.MapDelete("/api/reservations/{id}", async (IReservationRepository reservationRepository, int id) =>
+{
+  return await reservationRepository.DeleteReservationByID(id);
 });
 
 app.Run();
