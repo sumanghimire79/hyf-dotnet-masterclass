@@ -1,0 +1,12 @@
+backend/bin/
+backend/obj/
+frontend/node_modules
+frontend/.env_example
+frontend/.env_forlocalhost
+frontend/database_dump_meals.sql
+frontend/package-lock.json
+<<<<<<< HEAD
+=======
+.gitignore
+>>>>>>> 5a2d8f5f53233a89d448224e3d18dd9732900112
+backend/appsettings.Development.json
