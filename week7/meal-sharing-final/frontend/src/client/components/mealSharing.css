@@ -1,0 +1,386 @@
+
+.App{
+  text-align: center;
+  width: 100%;
+}
+
+nav{
+  display: flex;
+  justify-content: space-between;
+  min-height: 10vh;
+  background-color: rgb(72, 70, 82);
+  color: white;
+ 
+  margin: 2px auto;
+  padding: 0 1rem;
+  border-radius: 0.3rem;
+}
+.logo-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo{
+  height: 3rem;
+  width: 5rem;
+  border-radius: 5rem;
+}
+
+nav ul {
+  font-size: 0.9rem;
+  display: flex;
+  list-style: none;
+  color:white;
+  width: fit-content;
+
+}
+nav ul li{
+ padding: 1rem 0.5rem;
+ 
+}
+
+
+a{
+  color: rgb(246, 244, 244);
+}
+a:hover{
+  color: rgb(174, 137, 137);
+}
+.display-item > a{
+  color: rgb(93, 88, 88);
+}
+.display-item > a:visited{
+
+  color: rgb(23, 22, 22);
+}
+
+.homeSection > .banner {
+ background-image: url('http://optimoroute.com/wp-content/uploads/2020/09/Meal-Prep-Hero-Blog.jpg');
+ width:  90%;
+ height: 20rem;
+ background-repeat: no-repeat;
+ background-position: center;
+ object-fit: cover;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ margin : 5px auto;
+ border-radius: 0.3rem;
+}
+.about-banner {
+  background-image: url('https://cdn.vox-cdn.com/thumbor/WCDW_g-Tj3D9AOYBMwfNP-By7tc=/0x0:5713x3540/1200x800/filters:focal(2604x1523:3518x2437)/cdn.vox-cdn.com/uploads/chorus_image/image/70699951/landscape_ensemble_copy.0.jpg');
+  width:  90%;
+  height: 20rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  object-fit: cover;
+  margin : 5px auto;
+  border-radius: 0.3rem;
+ }
+ .about{
+    background-color: rgb(126, 118, 118);
+   width:  90%;
+   margin : 5px auto;
+   border-radius: 0.3rem;
+ }
+.div-center{
+  border: 1px solid gray;
+  margin: 5px auto;
+  padding: 10px;
+  width: 90%;
+  
+}
+.reserv_review{
+  display: flex;
+  justify-content: center;
+background-color: rgb(125, 123, 123);
+height: 3rem;
+align-items: center;
+gap: 3rem;
+
+}
+.popularmeals{
+  background-color: rgb(81, 71, 71);
+  display: flex;
+  flex-direction: column;
+
+  width: 32%;
+  flex-wrap: wrap;
+  border-radius: 1rem;
+
+}
+
+.div-3{
+  display: flex;
+  width: 90%;
+  margin : 5px auto;
+
+gap: 1rem;
+flex-wrap: wrap;
+
+justify-content: center;
+
+} 
+
+
+.bestItem{
+
+  width: 60%;
+  height: 6rem;
+  border-radius: 5rem;
+
+}
+
+.addReservationForm {
+  border: 0.1rem solid #000;
+  border-radius: 20px 5px;
+  margin-top: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(76, 73, 73);
+  padding: 15px;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+
+.display-container{
+  display: flex;
+  background-color: whitesmoke;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border: 1px solid rgb(125, 123, 123);
+  border-radius: 10px;
+  margin: 5px;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 10px;
+  margin: 20px;
+  word-wrap: break-word;
+}
+.display-item {
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+  width: 33%;
+  background-color: rgb(126, 118, 118);
+  border: 0.2rem solid rgb(36, 34, 34);
+  border-radius: 10px ;
+  word-wrap: break-word;
+
+}
+.specificReturnDiv{
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.detailspecificPagebuttonSpan{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+
+}
+
+.display-reviewItem{
+  background-color: rgb(126, 118, 118);
+}
+
+.banner button {
+  border: 0.11rem solid rgb(249, 245, 245);
+  width: 10rem;
+  padding: 10px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: skyblue;
+  color: darkblue;
+}
+.message {
+  font-size: 1.2em;
+  text-align: center;
+  color: #36a936;
+}
+
+.reviewDetails{
+  display: flex;
+  background-color: red;
+  flex-direction: column;
+  border: 0.5rem double gray ;
+  border-radius: 5rem 3rem;
+}
+
+.contactUsForm{
+  margin: 10px;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  flex-direction: column;
+}
+.contactUsDiv{
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  align-items: center;
+  flex-wrap: wrap;
+  
+}
+.submit-form-css{
+  background-color: rgb(60, 49, 49);
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 1rem auto;
+  gap: 0.5rem;
+  color: white;
+  padding: 10%;
+
+}
+/* .submit-form-css select{
+background-color: red;
+width: 100%;
+} */
+.login-button{
+  display: flex;
+ margin: 0.5em auto;
+ gap: 1em;
+ justify-content: center;
+}
+
+
+/* Contact Us*/
+.container input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.container input[type=submit] {
+  background-color: #04AA6D;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.container input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  width: 50%;
+  margin: 10px auto;
+}
+
+iframe{
+  width: 100%;
+}
+footer{
+  padding: 2px;
+  background-color: rgb(72, 70, 82);
+  color: aliceblue;
+  width: 100%;
+  border-radius: 0.3rem;
+}
+footer a{color: darkgoldenrod;}
+
+
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+    
+  }
+  .display-container{background-color: #000000;}
+  .display-item{
+    background-color: rgb(119, 115, 115);
+    width: 100%;
+  }
+  .div-3{
+    display: flex;
+    width: 90%;
+    margin : 5px auto;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .div-3 > div{  
+    width: 80%;
+    border: 1px solid gray;
+    margin: 1px;
+    padding: 1px;
+    margin: 0 auto;
+  }
+  .bestItem{
+    width: 100%;
+    height: 50%;
+  }
+  .submit-form-css{
+    background-color: rgb(60, 49, 49);
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: 1rem auto;
+    gap: 0.5rem;
+    color: white;
+    padding: 7.4%;
+  
+  }
+  nav ul li{
+    padding: 1rem 0.2rem;
+    
+   }
+nav{
+  padding: 0 0.2rem;
+}
+
+ 
+}
+
+@media only screen and (max-width: 415px) {
+  nav {
+    display: flex;
+    justify-content: space-between;
+    min-height: 10vh;
+    background-color: rgb(68, 66, 74);
+    color: white;
+    width: 90%;
+    margin: 2px auto;
+  
+    
+  }
+  nav ul {
+    font-size: 0.9rem;
+    display: flex;
+    list-style: none;
+    flex-direction: column;
+    color:white;
+    width: fit-content;
+    margin: 0 auto;
+  
+  }
+  .submit-form-css{
+    background-color: rgb(60, 49, 49);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 1rem auto;
+    gap: 0.5rem;
+    color: white;
+    padding: 10%;
+  
+  }
+  footer{
+    width: 90%;
+    margin: 0 auto;
+  }
+
+}
